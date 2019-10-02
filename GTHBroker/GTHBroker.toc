@@ -1,0 +1,12 @@
+## Interface: 11302
+## Title: Getting Things Healed LDB Plug-in
+## Version: 1.3
+## Notes: A data broker plugin that displays assignments and option for Getting Things Healed.
+## Dependencies: GettingThingsHealed
+## X-LoadOn-Always: delayed
+
+libs\LibStub.lua
+libs\CallbackHandler-1.0.lua
+libs\LibDataBroker-1.1.lua
+
+GTHBroker.lua

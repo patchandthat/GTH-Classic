@@ -1,0 +1,62 @@
+Getting Things Healed
+--a compact healing assignment manager
+
+v2.0.7
+
+** Overview **
+
+Getting Things Healed (GTH) provides a point-and-click interface for making healing assignments in a raid environment.
+
+Use the text command /gth to open the configuration window.
+
+** Managing Healing Assignments **
+
+First, decide how many phases are in the fight. For each phase, you can make up to 8 named assignments. Each assignment can be a specific target to heal---a tank or group---or strategy---such as "raid healing." 
+
+You then pick the healers you want on each assignment. The healer name pool at the bottom of the GTH frame shows all available healers in the raid. Drag any of these names to a assignment box above, to assign any healer to any assignment. Healers already assigned to any assignments in the current phase will appear dimmed, but they can still be drug to another assignment.
+
+Sets of phases and assignments and chosen healers are together "presets." Each preset can be saved and loaded at any time. When a preset is saved, the phase and assignment structure is saved, as well as the names, classes, and talent specs of each chosen healer. When that preset is later loaded, healers are slotted into the assignment structure using (1) matching healer names, (2) matching healer class and talents, (3) matching class only, and finally (4) any remaining healer in the raid. In this way, you can use your saved presets as templates, and GTH will populate the template with the healers in your raid, matching as closely as possible the saved healer classes and talent specs.
+
+The current set of assignments and phases saves when you close the window. So in the event of a crash, the set will be available when you reload the game.
+
+** Talent Scanning **
+
+GTH automatically scans your raid for talents. It uses talents to filter the list of available healers. You can turn off talent filtering---in case you suddenly want your Elemental Shaman to heal for one fight, for example---by toggling "Filter healers by talents" in the option menu (gear icon along the bottom row).
+
+If a member of your raid changes talent spec during the raid, you can force GTH to re-scan talents the Rescan command in the options menu.
+
+Scanned healers will have talent specialization tree icons next to their names, as well. Uninspected healers will display a '?' icon. You can toggle these icons on and off from the options menu.
+
+Wait a second, while hovering over any healer in the available pool, to see values of inspected talents.
+
+** Broadcasting Healing Assignments **
+
+The channel menu at the bottom-left of the GTH window allows you to select the method of announcing healing assignments. You can choose the raid channel or any joined custom channel (with a channel number of /5 or above). 
+
+GTH throttles broadcast messages, so that you don't trigger the anti-spam features of the WoW servers. If you have a long list of assignments, you will observe a delay before they complete broadcasting. This is normal.
+
+You can also choose to announce assignments via whispers. Whisper broadcasts send individual healer assignments, not the entire set.
+
+Healers can also send a whisper of 'heal!' or 'heal! all' at any time, to receive an individual assignment list or the full set of assignments, respectively.
+
+If the SHIFT key is held when the 'Broadcast' button is clicked, GTH will broadcast assignments from only the currently displayed phase, not the entire set of phases. 
+
+You can also use the command '/gth broadcast' to macro broadcasting. You can append a comma-separated list of phase names. This will allow you to broadcast only some of the phases. For example, '/gth broadcast aphase,anotherphase' will broadcast the assignments for aphase and anotherphase, but no other phases (if they exist).
+
+** Death and Disconnect Announcements **
+
+In the options menu, you can toggle death announcements on and off. If announcements are on, when a healer dies, an announcement will appear in the broadcast channel (or be sent out via whispers) that informs other healers of the dead healer's name and assignments. Priests with Spirit of Redemption will send out death announcements when Spirit of Redemption begins, and then a final short "really dead now" message when Spirit of Redemption expires.
+
+Disconnects can be announced in the same way, also via a toggle in the options menu.
+
+** Assignment Name Wildcards **
+
+The wildcards %MT1, %MT2, %MT3, etc. are provided for pulling main tank names from oRA or the default WoW interface (/mt). If you put the string '%MT1' in the name of any healing assignment, when you broadcast the assignment, the name of the first main tank in oRA will be substituted in place of this string. The default main tank assignments in the assignment menu use this same wildcard system, but you can rename them to add notes about each tank. For example, the assignment name '%MT1 west flame tank' will broadcast as '(Felorix) west flame tank' if Felorix is assigned as the first oRA main tank.
+
+** Other Options and Commands **
+
+Use '/gth help' for a list of commands. Be sure to check the options menu for additional preferences and commands. '/gth reset' will do a hard reset of saved preferences.
+
+** Localization **
+
+GTH has translations for French, German and Spanish clients.
