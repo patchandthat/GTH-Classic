@@ -1,0 +1,34 @@
+WIP notes
+=========
+
+Strings:
+"Spec Icons"
+"Filter talents"
+"scan"  /cmd arg
+"talents" /cmd arg
+"filter healers by talents"
+"show talent spec icons"
+"rescan talents"
+
+
+Globals:
+GTHinspectTarget
+GTHinspectQueue
+GTHinspectedList
+GTHData.checkspecs
+GTHData.specicons
+
+
+Functions:
+GTH_IsHealerFromTalents
+GTH_IsTankFromTalents
+GTH_GetTalents
+GTH_UpdateInspectQueue
+GTH_NotifyInspect
+GTH_TalentsSame
+GTH_StartInspect
+GTH_GetRaidMemberTalents
+
+
+Notes:
+May be worth looking at AceLibs for chat rate limiting & talent inspection libs
