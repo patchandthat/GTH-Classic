@@ -12,23 +12,26 @@ Strings:
 
 
 Globals:
-GTHinspectTarget
-GTHinspectQueue
-GTHinspectedList
+* GTHinspectTarget
+* GTHinspectQueue
+* GTHinspectedList
+* GTHinspectedList2
+
 GTHData.checkspecs
 GTHData.specicons
 
 
 Functions:
-GTH_IsHealerFromTalents
-GTH_IsTankFromTalents
-GTH_GetTalents
-GTH_UpdateInspectQueue
-GTH_NotifyInspect
-GTH_TalentsSame
-GTH_StartInspect
-GTH_GetRaidMemberTalents
+* GTH_IsHealerFromTalents
+* GTH_IsTankFromTalents
+* GTH_GetTalents
+* GTH_UpdateInspectQueue
+* GTH_NotifyInspect
+* GTH_TalentsSame
+* GTH_StartInspect
+* GTH_GetRaidMemberTalents
 
+* = Declarations removed, call sites and usages still need inspecting and updating
 
 Notes:
 May be worth looking at AceLibs for chat rate limiting & talent inspection libs

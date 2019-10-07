@@ -37,7 +37,6 @@ GTHL = {
     ["Add another block of assignment rows."] = "Add another block of assignment rows.",
     ["Delete this phase"] = "Delete this phase",
     ["Remove this block of assignment rows."] = "Remove this block of assignment rows.",
-    ["Talents"] = "Talents",
     ["All remaining"] = "All remaining",
     ["Clear selections"] = "Clear selections",
     ["Healing assignments:"] = "Healing assignments:",
@@ -49,7 +48,6 @@ GTHL = {
     ["Whisper"] = "Whisper",
     ["No healing assignments for "] = "No healing assignments for ",
     ["Previous preset"] = "Previous preset",
-    ["Rescan talents"] = "Rescan talents",
     ["Broadcast deaths"] = "Broadcast deaths",
     ["active"] = "active",
     ["is really dead now"] = "is really dead now",
@@ -59,7 +57,6 @@ GTHL = {
     ["Move down"] = "Move down",
     ["Options"] = "Options",
     ["Verbose broadcasts"] = "Multi-line broadcasts",
-    ["Filter healers by talents"] = "Filter healers by talents",
     ["offline"] = "offline",
     ["Broadcast disconnects"] = "Broadcast disconnects",
     ["Share current assignments"] = "Share current assignments",
@@ -72,7 +69,6 @@ GTHL = {
 	["Square"] = "Square",
 	["Cross"] = "Cross",
 	["Skull"] = "Skull",
-	["Show talent spec icons"] = "Show talent spec icons",
 	["Right-click to rename"] = "Right-click to name"
 }
 --end
@@ -112,7 +108,6 @@ GTHL = {
     ["Add another block of assignment rows."] = "新增這個治療指派欄位",
     ["Delete this phase"] = "刪除這個治療階段",
     ["Remove this block of assignment rows."] = "移除這個治療指派欄位",
-    ["Talents"] = "天賦",
     ["All remaining"] = "剩下的治療職業",
     ["Clear selections"] = "清除選擇",
     ["Healing assignments:"] = "治療指派:",
@@ -124,7 +119,6 @@ GTHL = {
     ["Whisper"] = "密語",
     ["No healing assignments for "] = "目前沒有治療指派 ",
     ["Previous preset"] = "前一個治療指派設定",
-    ["Rescan talents"] = "重新掃描天賦",
     ["Broadcast deaths"] = "廣播死亡",
     ["active"] = "作用中",
     ["is really dead now"] = "已死亡",
@@ -134,7 +128,6 @@ GTHL = {
     ["Move down"] = "往下移動",
     ["Options"] = "選項",
     ["Verbose broadcasts"] = "多行廣播",
-    ["Filter healers by talents"] = "天賦過濾治療職業",
     ["offline"] = "離線",
     ["Broadcast disconnects"] = "廣播斷線團員",
     ["Share current assignments"] = "分享目前的治療指派",
@@ -147,7 +140,6 @@ GTHL = {
 	["Square"] = "方形",
 	["Cross"] = "十字",
 	["Skull"] = "頭顱",
-	["Show talent spec icons"] = "顯示天賦圖示",
 	["Right-click to rename"] = "右鍵重新命名"
 }
 end
@@ -188,7 +180,6 @@ if(GetLocale()=="frFR") then
         ["Add another block of assignment rows."] = "Ajouter un nouveau bloc d'attributions.",
         ["Delete this phase"] = "Supprimer cette phase",
         ["Remove this block of assignment rows."] = "Supprimer ce bloc d'attributions.",
-        ["Talents"] = "Talents",
         ["All remaining"] = "Tout conserver",
         ["Clear selections"] = "Remettre à zéro",
         ["Healing assignments:"] = "Attributions soins:",
@@ -200,7 +191,6 @@ if(GetLocale()=="frFR") then
         ["Whisper"] = "Chuchotement",
         ["No healing assignments for "] = "No attributions soins pour ",
         ["Previous preset"] = "Présélection précédent",
-        ["Rescan talents"] = "Rescan talents",
         ["Broadcast deaths"] = "Transmettre les décès",
     	["active"] = "actif",
     	["is really dead now"] = "est vraiment mort",
@@ -210,7 +200,6 @@ if(GetLocale()=="frFR") then
 		["Move down"] = "Déplacer vers le bas",
 		["Options"] = "Options",
 		["Verbose broadcasts"] = "Verbose émissions",
-		["Filter healers by talents"] = "Filter healers by talents",
 		["offline"] = "offline",
 		["Broadcast disconnects"] = "Transmettre disconnects",
 		["Share current assignments"] = "Partager attributions soins",
@@ -223,7 +212,6 @@ if(GetLocale()=="frFR") then
 		["Square"] = "carr\195\169",
 		["Cross"] = "croix",
 		["Skull"] = "cr\195\162ne",
-		["Show talent spec icons"] = "Show talent spec icons",
 		["Right-click to rename"] = "Right-click to name"
     }
 end
@@ -264,7 +252,6 @@ if(GetLocale()=="deDE") then
         ["Add another block of assignment rows."] = "Einen zusätzlichen Block mit Einteilungen einfügen.",
         ["Delete this phase"] = "Diese Phase löschen",
         ["Remove this block of assignment rows."] = "Diesen Block mit Einteilungen entfernen.",
-        ["Talents"] = "Talente",
         ["All remaining"] = "Alle verbleibenden",
         ["Clear selections"] = "Auswahl aufheben",
         ["Healing assignments:"] = "Heileinteilungen:",
@@ -276,7 +263,6 @@ if(GetLocale()=="deDE") then
         ["Whisper"] = "Fl\195\188stern",
         ["No healing assignments for "] = "Keine Heileinteilungen für ",
         ["Previous preset"] = "Vorhergehenden Voreinstellung",
-        ["Rescan talents"] = "Inspizieren Talente",
         ["Broadcast deaths"] = "Senden Todesfälle",
     	["active"] = "aktive",
     	["is really dead now"] = "ist nun wirklich tot",
@@ -286,7 +272,6 @@ if(GetLocale()=="deDE") then
 		["Move down"] = "Nach unten",
 		["Options"] = "Options",
 		["Verbose broadcasts"] = "Verbose Sendungen",
-		["Filter healers by talents"] = "Filter healers by talents",
 		["offline"] = "offline",
 		["Broadcast disconnects"] = "Senden disconnects",
 		["Share current assignments"] = "Teilen Heileinteilungen",
@@ -299,7 +284,6 @@ if(GetLocale()=="deDE") then
 		["Square"] = "Quadrat",
 		["Cross"] = "Kreuz",
 		["Skull"] = "Totenschädel",
-		["Show talent spec icons"] = "Show talent spec icons",
 		["Right-click to rename"] = "Right-click to name"
     }
 end
@@ -340,7 +324,6 @@ if(GetLocale()=="esES" or GetLocale()=="esMX") then
 		["Add another block of assignment rows."] = "Añadir otro bloque de filas de asignación.",
 		["Delete this phase"] = "Borrar esta fase",
 		["Remove this block of assignment rows."] = "Quitar este bloque de filas de asignación.",
-		["Talents"] = "Talentos",
 		["All remaining"] = "Lo que queda",
 		["Clear selections"] = "Borrar selección",
 		["Healing assignments:"] = "Asignación de curas:",
@@ -352,7 +335,6 @@ if(GetLocale()=="esES" or GetLocale()=="esMX") then
 		["Whisper"] = "susurro",
 		["No healing assignments for "] = "No hay asignación de curas para ",
 		["Previous preset"] = "Configuración anterior",
-		["Rescan talents"] = "Escanear talentos",
 		["Broadcast deaths"] = "Broadcast muertes",
 		["active"] = "activo",
 		["is really dead now"] = "está verdaderamente muerto ahora",
@@ -362,7 +344,6 @@ if(GetLocale()=="esES" or GetLocale()=="esMX") then
 		["Move down"] = "Bajar",
 		["Options"] = "Options",
 		["Verbose broadcasts"] = "Verbose broadcast",
-		["Filter healers by talents"] = "Filter healers by talents",
 		["offline"] = "offline",
 		["Broadcast disconnects"] = "Broadcast disconnects",
 		["Share current assignments"] = "Compartir asignación de curas",
@@ -375,7 +356,6 @@ if(GetLocale()=="esES" or GetLocale()=="esMX") then
 		["Square"] = "Cuadrado",
 		["Cross"] = "Cruz",
 		["Skull"] = "Calavera",
-		["Show talent spec icons"] = "Show talent spec icons",
 		["Right-click to rename"] = "Right-click to name"
 	}
 end
