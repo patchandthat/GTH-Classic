@@ -297,10 +297,6 @@ function GTH_Options(msg)
     elseif msg == "scan" then
         -- force rescan of raid and rebuild of inspect queue
         GTH_FindHealers();
-        GTHinspectTarget = nil;
-        GTHinspectQueue = {};
-        GTHinspectedList = {};
-        GTH_UpdateInspectQueue();
     elseif msg == "purelists" then
         -- toggle showing non-healer spec healing classes in healer lists
         GTHData.checkspecs = not GTHData.checkspecs;
@@ -310,12 +306,6 @@ function GTH_Options(msg)
     elseif msg == "debug" then
         -- toggle debug text
         GTHdebug = not GTHdebug;
-    elseif msg == "talents" then
-        -- output talent scanning info
-        for k,v in pairs( GTHinspectedList ) do
-            gthprint( k..":"..v[1].."/"..v[2].."/"..v[3] )
-        end
-        gthprint( "GTH> Inspect Queue contains "..#(GTHinspectQueue).." names." );
     elseif msg == "reset" then
         -- reset saved variables and assignment
         -- replace saved data with default values
@@ -395,48 +385,20 @@ function GTH_OnEvent(self,event,...)
     
     	GTH_CombatLogEvent(...)
     
-    elseif event == "INSPECT_TALENT_READY" then
-    
-        -- an inspect is ready, so go fire that function
-        --self:UnregisterEvent("INSPECT_TALENT_READY");
-        --GTH_GetRaidMemberTalents( true );
-    
     elseif event == "CHAT_MSG_WHISPER" then
         
         -- handle whispers
         GTH_CHAT_MSG_WHISPER(arg1,arg2);
         
     elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" ) then
-    
-        -- clear any active talent scan, in case queue'd player just left the raid
-        self:UnregisterEvent("INSPECT_TALENT_READY");
-        GTHinspectQueue = {};
-        GTHinspectTarget = nil;
-        
+       
         -- scan for healers
         GTH_FindHealers();
-        
-        -- update inspect queue
-        GTH_UpdateInspectQueue();
-        
-        -- next inspect will fire from update timer
+
     elseif event == "RAID_TARGET_UPDATE" then
         -- redraw all the healer boxes
         GTH_RefreshPopulatePool()
         GTH_RefreshDropMenus( GTHdisplayphase )
-        
-    elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        -- detect talent spec swaps
-        local unitid = arg1
-        local unitname = UnitName( unitid )
-        local spellname = arg2
-        local primaryactivate = GetSpellInfo(63645)
-        local secondaryactivate = GetSpellInfo(63644)
-        if spellname == primaryactivate or spellname == secondaryactivate then
-            if GTHhealerList[unitname] or GTHtankList[unitname] then
-                table.insert(GTHinspectQueue, unitname )
-            end
-        end
     
     elseif event == "VARIABLES_LOADED" then
     
@@ -1499,9 +1461,6 @@ function GTHPopulateDDClick(self)
             end
             GTH_RefreshPopulatePool()
         end
-    end
-    if self.value == "Rescan talents" then
-        table.insert(GTHinspectQueue,GTHPopDropped)
     end
 end
 
@@ -2716,15 +2675,6 @@ function GTHdropmenu_OptionsOnClick(self)
 	if self.value == "Broadcast deaths" then
 		-- toggle without changing the selected channel
 		GTHData.announceDeaths = not GTHData.announceDeaths
-	elseif self.value == "Rescan talents" then
-		-- force rescan of healers and talents
-		GTH_FindHealers();
-		GTHinspectTarget = nil;
-		GTHinspectQueue = {};
-		GTHinspectedList = {};
-		GTH_UpdateInspectQueue();
-		gthprint( "GTH> Inspect queue contains "..#(GTHinspectQueue).." names." );
-		gthprint( "GTH> For progress updates, type /gth talents." );
 	elseif self.value == "Verbose" then
 		-- toggle verbose message formats
 		GTHData.verbose = not GTHData.verbose
@@ -2954,15 +2904,10 @@ function GTHdropmenu_OnClick(self)
             GTHassignment[thephase][theassign] = {};
             buttonstring = "";
             UIDropDownMenu_SetSelectedValue(self.owner, nil);
-        elseif self.value == 100 then
+        elseif self.value == 100 then -- PA: What is this?
             -- force rescan of talents
             GTH_FindHealers();
-            GTHinspectTarget = nil;
-            GTHinspectQueue = {};
-            GTHinspectedList = {};
-            GTH_UpdateInspectQueue();
-            gthprint( "GTH> Inspect queue contains "..#(GTHinspectQueue).." names." );
-            gthprint( "GTH> For progress updates, type /gth talents." );
+
         else
             -- assign a named healer
             if not GTH_HealerAssigned( self.value , thephase , theassign ) then
@@ -3190,23 +3135,11 @@ function GTH_FindHealers()
                     engClass == "PALADIN" or engClass == "SHAMAN" then
                 -- is a healer, add to healers list
                 newhlist[unitname] = { ["class"]=engClass , ["talents"]=nil }
-                
-                -- check for talents in previous inspections
-                if GTHinspectedList[unitname] then
-                    -- is in the inspected list, so fetch talents
-                    newhlist[unitname]["talents"] = GTHinspectedList[unitname]
-                end
             end
             -- check for tank class
             if engClass == "WARRIOR" or engClass == "DRUID" or engClass == "PALADIN" or engClass == 
             "DEATHKNIGHT" then
                 newtlist[unitname] = { ["class"]=engClass , ["talents"]=nil }
-                
-                -- check for talents in previous inspections
-                if GTHinspectedList[unitname] then
-                    -- is in the inspected list, so fetch talents
-                    newtlist[unitname]["talents"] = GTHinspectedList[unitname]
-                end
             end
         end
     end -- loop over raid members

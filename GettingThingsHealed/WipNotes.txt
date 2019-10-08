@@ -12,10 +12,10 @@ Strings:
 
 
 Globals:
-* GTHinspectTarget
-* GTHinspectQueue
-* GTHinspectedList
-* GTHinspectedList2
+** GTHinspectTarget
+** GTHinspectQueue
+** GTHinspectedList
+** GTHinspectedList2
 
 GTHData.checkspecs
 GTHData.specicons
@@ -31,7 +31,12 @@ Functions:
 * GTH_StartInspect
 * GTH_GetRaidMemberTalents
 
+Events: 
+INSPECT_TALENT_READY
+UNIT_SPELLCAST_SUCCEEDED ** double check that this doesn't apply to more than talenty spec swapping
+
 * = Declarations removed, call sites and usages still need inspecting and updating
+** = Usages removed
 
 Notes:
 May be worth looking at AceLibs for chat rate limiting & talent inspection libs
