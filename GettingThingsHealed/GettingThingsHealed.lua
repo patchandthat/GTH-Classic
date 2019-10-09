@@ -5,7 +5,7 @@
 
 -- globals
 
-GTHversion = "v2.5.3"
+GTHversion = "v0.1.0"
 
 --colors
 local gthcolor = {
@@ -116,39 +116,39 @@ GTHpresets = {
 }
 
 -- spec icons
-GTHspecicons = {
-    ["DRUID"] = {
-        [1] = "Spell_Nature_ForceOfNature",
-        [2] = "Ability_Racial_BearForm",
-        [3] = "Ability_Druid_TreeofLife"
-    },
-    ["PRIEST"] = {
-        [1] = "Spell_Holy_Penance",
-        [2] = "Spell_Holy_CircleOfRenewal",
-        [3] = "Spell_Shadow_Shadowform"
-    },
-    ["SHAMAN"] = {
-        [1] = "Spell_Shaman_ThunderStorm",
-        [2] = "Spell_Shaman_ImprovedStormstrike",
-        [3] = "Spell_Shaman_TidalWaves"
-    },
-    ["PALADIN"] = {
-        [1] = "Ability_Paladin_BeaconofLight",
-        [2] = "Spell_Holy_AvengersShield",
-        [3] = "Ability_Paladin_DivineStorm"
-    },
-    -- tank classes
-    ["WARRIOR"] = {
-        [1] = "Ability_Warrior_SavageBlow",
-        [2] = "Ability_Warrior_Rampage",
-        [3] = "Ability_Warrior_DefensiveStance"
-    },
-    ["DEATHKNIGHT"] = {
-        [1] = "Spell_Deathknight_BloodPresence",
-        [2] = "Spell_Deathknight_FrostPresence",
-        [3] = "Spell_Deathknight_UnholyPresence"
-    }
-}
+-- GTHspecicons = {
+--     ["DRUID"] = {
+--         [1] = "Spell_Nature_ForceOfNature",
+--         [2] = "Ability_Racial_BearForm",
+--         [3] = "Ability_Druid_TreeofLife"
+--     },
+--     ["PRIEST"] = {
+--         [1] = "Spell_Holy_Penance",
+--         [2] = "Spell_Holy_CircleOfRenewal",
+--         [3] = "Spell_Shadow_Shadowform"
+--     },
+--     ["SHAMAN"] = {
+--         [1] = "Spell_Shaman_ThunderStorm",
+--         [2] = "Spell_Shaman_ImprovedStormstrike",
+--         [3] = "Spell_Shaman_TidalWaves"
+--     },
+--     ["PALADIN"] = {
+--         [1] = "Ability_Paladin_BeaconofLight",
+--         [2] = "Spell_Holy_AvengersShield",
+--         [3] = "Ability_Paladin_DivineStorm"
+--     },
+--     -- tank classes
+--     ["WARRIOR"] = {
+--         [1] = "Ability_Warrior_SavageBlow",
+--         [2] = "Ability_Warrior_Rampage",
+--         [3] = "Ability_Warrior_DefensiveStance"
+--     },
+--     ["DEATHKNIGHT"] = {
+--         [1] = "Spell_Deathknight_BloodPresence",
+--         [2] = "Spell_Deathknight_FrostPresence",
+--         [3] = "Spell_Deathknight_UnholyPresence"
+--     }
+-- }
 
 -- raid target icons in Interface\\TARGETINGFRAME\\
 GTHluckycharms = {
@@ -166,9 +166,7 @@ GTHluckycharms = {
 GTHData = {
 	announceDeaths = false,     -- announce healer deaths to channel
 	announceOffline = false,    -- announce disconnects
-	specicons = true,          -- show talent tree icons
 	verbose = true,	       -- verbose message formats
-    checkspecs = true,         -- check spec to see if healer specced
     announcechannel = "RAID",      -- custom announce channel
     assignment = nil,          -- saved current assignment
     gthversion = GTHversion,     -- version mark for pref updating
@@ -179,9 +177,7 @@ GTHData = {
 GTHDataDefaults = {
 	announceDeaths = false,     -- announce healer deaths to channel
 	announceOffline = false,    -- announce disconnects
-	specicons = true,          -- show talent tree icons
 	verbose = true,	       -- verbose message formats
-    checkspecs = true,         -- check spec to see if healer specced
     announcechannel = "RAID",      -- custom announce channel
     assignment = nil,          -- saved current assignment
     gthversion = GTHversion,     -- version mark for pref updating
@@ -210,6 +206,8 @@ GTHsessionflags = {
 
 function GTH_OnLoad(self)
 
+    gthprint('GTH-Trace: GTH_OnLoad');
+
     -- register events
     --- initialization events
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -222,7 +220,7 @@ function GTH_OnLoad(self)
     self:RegisterEvent("CHAT_MSG_ADDON");
     
     -- raid composition events
-    self:RegisterEvent("PARTY_MEMBERS_CHANGED");
+    self:RegisterEvent("GROUP_ROSTER_UPDATE");
     self:RegisterEvent("RAID_ROSTER_UPDATE");
     
     -- combat log event, so we can detect healer deaths and notify
@@ -236,11 +234,11 @@ function GTH_OnLoad(self)
     self:RegisterEvent("RAID_TARGET_UPDATE")
     
     -- Detect dual-spec talent swaps
-    self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+    -- self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     
     -- talent inspect event
     -- this fires after a successful NotifyInspect("unit")
-    --this:RegisterEvent("INSPECT_TALENT_READY");
+    -- this:RegisterEvent("INSPECT_TALENT_READY");
 	
 	-- slash init
 	SlashCmdList["GTHslash"] = GTH_Options;
@@ -264,8 +262,6 @@ function GTH_Options(msg)
         gthprint("Getting Things Healed option commands:");
         gthprint("    /gth: Show the config dialog");
         gthprint("    /gth scan: Force rescan of healers in raid");
-        gthprint("    /gth purelists: Toggle filtering of non-healing specs");
-        gthprint("    /gth talents: Show scanned talent information");
     elseif msg == "pollroles" then
         -- dump all raid member roles to main output
         for i = 1,GetNumGroupMembers() do
@@ -297,12 +293,6 @@ function GTH_Options(msg)
     elseif msg == "scan" then
         -- force rescan of raid and rebuild of inspect queue
         GTH_FindHealers();
-    elseif msg == "purelists" then
-        -- toggle showing non-healer spec healing classes in healer lists
-        GTHData.checkspecs = not GTHData.checkspecs;
-        local s = "ON";
-        if not GTHData.checkspecs then s = "OFF"; end
-        gthprint("GTH> Spec filtering is now "..s);
     elseif msg == "debug" then
         -- toggle debug text
         GTHdebug = not GTHdebug;
@@ -390,7 +380,7 @@ function GTH_OnEvent(self,event,...)
         -- handle whispers
         GTH_CHAT_MSG_WHISPER(arg1,arg2);
         
-    elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" ) then
+    elseif ( event == "GROUP_ROSTER_UPDATE" or event == "RAID_ROSTER_UPDATE" ) then
        
         -- scan for healers
         GTH_FindHealers();
@@ -427,11 +417,6 @@ function GTH_OnEvent(self,event,...)
         
         if GTHData.announceOffline == nil then
         	GTHData.announceOffline = true
-        end
-        
-        -- added in 1.5
-        if GTHData.specicons == nil then
-            GTHData.specicons = true
         end
         
         -- initialize
@@ -1111,10 +1096,8 @@ function GTH_RefreshPopulatePool()
     local n = 0
     local hlist = {}
     for h,v in pairs( GTHhealerList ) do
-        if GTH_IsHealerFromTalents( h ) then
-            table.insert( hlist , h )
-            n = n + 1
-        end
+        table.insert( hlist , h )
+        n = n + 1
     end
     table.sort( hlist )
     
@@ -1132,7 +1115,7 @@ function GTH_RefreshPopulatePool()
                 GTHframes.dragPopulate[ i ].phase = "x"
                 GTHframes.dragPopulate[ i ].assignment = "x"
                 -- show
-                GTH_DragSetHealer( GTHframes.dragPopulate[ i ] , GTHL["All remaining"] , nil , nil , "populate" )
+                GTH_DragSetHealer( GTHframes.dragPopulate[ i ] , GTHL["All remaining"] , nil , "populate" )
                 GTHframes.dragPopulate[ i ]:ClearAllPoints()
                 GTHframes.dragPopulate[ i ]:SetPoint( "LEFT" , GTHframes.frame , "BOTTOMLEFT" , 60+menusstartx + (col-1)*100 , 70 + (row-1)*20 )
                 GTHframes.dragPopulate[ i ]:Show()
@@ -1144,14 +1127,8 @@ function GTH_RefreshPopulatePool()
             GTHframes.dragPopulate[ i ].phase = "x"
             GTHframes.dragPopulate[ i ].assignment = "x"
             -- show
-            local ttip = nil
-            if GTH_GetTalents( hlist[i] ) then
-                local t,t2 = GTH_GetTalents( hlist[i] )
-                if not t2 then t2={0,0,0} end
-                ttip = GTH_rgbToHexColor(1,1,1)..t[1].."/"..t[2].."/"..t[3].." ("..t2[1].."/"..t2[2].."/"..t2[3]..")"
-                ttip = ttip.."\nRight-click for options"
-            end
-            GTH_DragSetHealer( GTHframes.dragPopulate[ i ] , hlist[ i ] , GTH_GetClass( hlist[i] ) , GTH_GetTalents( hlist[i] ) , "populate" , nil , nil , ttip )
+            local tooltip = nil
+            GTH_DragSetHealer( GTHframes.dragPopulate[ i ] , hlist[ i ] , GTH_GetClass( hlist[i] ) , "populate" , nil , nil , tooltip )
             
             -- check if healer is assigned in this phase already
             local assignedalready = false
@@ -1183,10 +1160,8 @@ function GTH_RefreshPopulatePool()
     n = 0
     local tlist = {}
     for t,v in pairs( GTHtankList ) do
-        if GTH_IsTankFromTalents( t ) then
-            table.insert( tlist , t )
-            n = n + 1
-        end
+        table.insert( tlist , t )
+        n = n + 1
     end
     table.sort( tlist )
     
@@ -1209,7 +1184,7 @@ function GTH_RefreshPopulatePool()
                     GTHframes.dragTankPopulate[ i ].assignment = "%MT1"
                 end
                 -- show
-                GTH_DragSetHealer( GTHframes.dragTankPopulate[ i ] , GTHframes.dragTankPopulate[ i ].assignment , nil , nil , "assignmentpopulate" )
+                GTH_DragSetHealer( GTHframes.dragTankPopulate[ i ] , GTHframes.dragTankPopulate[ i ].assignment , nil , "assignmentpopulate" )
                 GTHframes.dragTankPopulate[ i ]:ClearAllPoints()
                 GTHframes.dragTankPopulate[ i ]:SetPoint( "LEFT" , GTHframes.frame , "BOTTOMLEFT" , 15 + (col-1)*100 , 70 + (row-1)*20 )
                 local assignedalready = GTH_alreadyassigned( GTHframes.dragTankPopulate[ i ].assignment )
@@ -1227,14 +1202,8 @@ function GTH_RefreshPopulatePool()
             GTHframes.dragTankPopulate[ i ].phase = GTHdisplayphase
             GTHframes.dragTankPopulate[ i ].assignment = tlist[ i ]
             -- show
-            local ttip = nil
-            if GTH_GetTalents( tlist[i] ) then
-                local t,t2 = GTH_GetTalents( tlist[i] )
-                if not t2 then t2={0,0,0} end
-                ttip = GTH_rgbToHexColor(1,1,1)..t[1].."/"..t[2].."/"..t[3].." ("..t2[1].."/"..t2[2].."/"..t2[3]..")"
-                ttip = ttip.."\nRight-click for options"
-            end
-            GTH_DragSetHealer( GTHframes.dragTankPopulate[ i ] , tlist[ i ] , GTH_GetClass( tlist[i] ) , GTH_GetTalents( tlist[i] ) , "assignmentpopulate" , nil , nil , ttip )
+            local tooltip = nil
+            GTH_DragSetHealer( GTHframes.dragTankPopulate[ i ] , tlist[ i ] , GTH_GetClass( tlist[i] ) , "assignmentpopulate" , nil , nil , tooltip )
             
             -- check if tank is assigned in this phase already
             local assignedalready = GTH_alreadyassigned( tlist[ i ] )
@@ -1257,7 +1226,7 @@ function GTH_RefreshPopulatePool()
     
 end
 
-function GTH_DragSetHealer( frame , name , class , talents , dragtype , tankname , tanknum , tooltip )
+function GTH_DragSetHealer( frame , name , class , dragtype , tankname , tanknum , tooltip )
     
     -- really sets more than healer drags...also handles assignments and phases
     
@@ -1265,7 +1234,6 @@ function GTH_DragSetHealer( frame , name , class , talents , dragtype , tankname
     
     frame.healername = name
     frame.healerclass = class
-    frame.talents = talents
     frame.tankname = tankname
     frame.tanknum = tanknum
     frame.dragtype = dragtype
@@ -1282,25 +1250,10 @@ function GTH_DragSetHealer( frame , name , class , talents , dragtype , tankname
     
     frame.labelframe:SetText( GTH_HexClassColor( colorclass )..name )
     
-    -- class spec icons
-    local htalents = talents
+    -- PA: Would be talent icon
+    frame.icon:SetTexture( nil )
     
-    if htalents then
-        if GTHData.specicons then
-            local tree = 1
-            if htalents[2] > htalents[1] and htalents[2] > htalents[3] then
-                tree = 2
-            elseif htalents[3] > htalents[1] and htalents[3] > htalents[2] then
-                tree = 3
-            end
-            local icon = GTHspecicons[ frame.healerclass ][ tree ]
-            frame.icon:SetTexture( "Interface\\Icons\\"..icon )
-        else
-            frame.icon:SetTexture( nil )
-        end
-    end
-    
-    if not htalents and frame.healername ~= GTHL["All remaining"] and dragtype ~= "phase" then
+    if frame.healername ~= GTHL["All remaining"] and dragtype ~= "phase" then
         frame.icon:SetTexture( "Interface\\GossipFrame\\ActiveQuestIcon.blp" )
         if not tankname and dragtype == "assignmentrelocate" then
             -- this is an assignment drag in a pool, and not tied to a named tank, so no talent icon display
@@ -1413,7 +1366,7 @@ function GTHPopulateDropInit(self, level)
 	level = level or 1
 	local info = UIDropDownMenu_CreateInfo()
 	
-	--local ttip = GTH_rgbToHexColor(1,1,1)..t[1].."/"..t[2].."/"..t[3].." ("..t2[1].."/"..t2[2].."/"..t2[3]..")"
+	--local tooltip = GTH_rgbToHexColor(1,1,1)..t[1].."/"..t[2].."/"..t[3].." ("..t2[1].."/"..t2[2].."/"..t2[3]..")"
 	info.text = "TITLE"
     info.isTitle = true
     info.value = -1
@@ -1436,6 +1389,7 @@ function GTHPopulateDropInit(self, level)
         info.icon = nil
         UIDropDownMenu_AddButton(info, level)
     else
+        -- PA: Leave this for now until you understand it better
         local itemname = "Rescan talents"
         info.text = itemname
         info.value = itemname
@@ -1653,8 +1607,6 @@ function GTH_DragStart( frame )
     if not name then name = "noname" end
     --GTHframes.dragGhostLabel:SetText( name )
     
-    --if frame.talents then gthprint( table.concat( frame.talents , "," ) ) end
-    
     --gthprint( table.concat( { name , frame.healerclass } , "," ) )
     
     -- check for assignment populate that is already assigned in this phase
@@ -1663,16 +1615,16 @@ function GTH_DragStart( frame )
     end
     
     if frame.dragtype == "phase" then
-        GTH_DragSetHealer( GTHframes.dragGhost , frame.phase , "PRIEST" , nil , "phase" )
+        GTH_DragSetHealer( GTHframes.dragGhost , frame.phase , "PRIEST" , "phase" )
         GTHframes.dragGhost:SetWidth( phasewidth )
     elseif frame.dragtype == "assignmentpopulate" then
-        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass , frame.talents , "assignmentpopulate" )
+        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass , "assignmentpopulate" )
         GTHframes.dragGhost:SetWidth( dragwidthstd )
     elseif frame.dragtype == "assignmentrelocate" then
-        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass , frame.talents , "assignmentrelocate" )
+        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass , "assignmentrelocate" )
         GTHframes.dragGhost:SetWidth( dragwidthstd )
     else
-        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass , frame.talents )
+        GTH_DragSetHealer( GTHframes.dragGhost , name , frame.healerclass )
         GTHframes.dragGhost:SetWidth( dragwidthstd )
     end
     
@@ -2132,7 +2084,6 @@ function GTH_RefreshAssignmentInPool( frame , index )
     local phase = frame.phase
     
     local class = nil
-    local talents = nil
     
     local displayname , tanknum , tankname = GTH_FormatAssignmentString( assignment )
     
@@ -2140,15 +2091,13 @@ function GTH_RefreshAssignmentInPool( frame , index )
         -- formatted assignment string replaced a tank name, so we need to color it right and pull talents
         if GTHtankList[ tankname ] then
             class = GTH_GetClass( tankname )
-            talents = GTH_GetTalents( tankname )
         end
     elseif GTHtankList[ displayname ] then
         -- if full assignment name is just the name of a tank, do the same
         class = GTH_GetClass( displayname )
-        talents = GTH_GetTalents( displayname )
     end
     
-    GTH_DragSetHealer( GTHframes.dragAssignment[index] , displayname , class , talents , "assignmentrelocate" , tankname , tanknum )
+    GTH_DragSetHealer( GTHframes.dragAssignment[index] , displayname , class , "assignmentrelocate" , tankname , tanknum )
     
     GTHframes.dragAssignment[index].phase = phase
     GTHframes.dragAssignment[index].assignment = assignment
@@ -2179,11 +2128,10 @@ function GTH_RefreshHealersInPool( frame , index )
             healerframe.phase = phase
             healerframe.assignment = assignment
             local name = hlist[i]
-            local class,talents
+            local class
             class = GTHassignment[phase][assignment][ name ][ "class" ]
-            talents = GTHassignment[phase][assignment][ name ][ "talents" ]
                 
-            GTH_DragSetHealer( healerframe , name , class , talents , "relocate" )
+            GTH_DragSetHealer( healerframe , name , class , "relocate" )
             col = col + 1
             if col > 2 then
                 col = 1
@@ -2333,26 +2281,6 @@ function GTHdropOptions_Initialise(self)
     info.icon = nil;
     UIDropDownMenu_AddButton(info, level);
     
-    -- checkspecs
-    
-    info.text = GTHL["Filter healers by talents"];
-    info.value = "Filter talents";
-    info.func = function(self) GTHdropmenu_OptionsOnClick(self) end; 
-    info.owner = self
-    info.checked = GTHData.checkspecs; 
-    info.icon = nil;
-    UIDropDownMenu_AddButton(info, level);
-    
-    -- spec icons
-    
-    info.text = GTHL["Show talent spec icons"];
-    info.value = "Spec Icons";
-    info.func = function(self) GTHdropmenu_OptionsOnClick(self) end; 
-    info.owner = self
-    info.checked = GTHData.specicons; 
-    info.icon = nil;
-    UIDropDownMenu_AddButton(info, level);
-    
     -- COMMANDS
     
     info.text = GTHL["Commands"];
@@ -2370,17 +2298,6 @@ function GTHdropOptions_Initialise(self)
     -- roster reset
     info.text = "Reset saved roster";
     info.value = "ResetRoster";
-    info.func = function(self) GTHdropmenu_OptionsOnClick(self) end;
-    info.owner = self
-    info.icon = nil;
-    info.checked = nil;
-    info.colorCode = GTH_rgbToHexColor( 1 , 1 , 1 );
-    info.keepShownOnClick = nil;
-    UIDropDownMenu_AddButton(info, level);
-    
-    -- scan talents 
-    info.text = GTHL["Rescan talents"];
-    info.value = "Rescan talents";
     info.func = function(self) GTHdropmenu_OptionsOnClick(self) end;
     info.owner = self
     info.icon = nil;
@@ -2678,19 +2595,10 @@ function GTHdropmenu_OptionsOnClick(self)
 	elseif self.value == "Verbose" then
 		-- toggle verbose message formats
 		GTHData.verbose = not GTHData.verbose
-	elseif self.value == "Filter talents" then
-		GTHData.checkspecs = not GTHData.checkspecs
-		GTH_RefreshPopulatePool()
-		GTH_RefreshDropMenus( GTHdisplayphase )
-		GTH_RefreshDropMenus( GTHdisplayphase )
 	elseif self.value == "Broadcast disconnects" then
 		GTHData.announceOffline = not GTHData.announceOffline
 	elseif self.value == "Share" then
 		GTH_SharePreset( GTHassignment )
-    elseif self.value == "Spec Icons" then
-        GTHData.specicons = not GTHData.specicons
-        GTH_RefreshPopulatePool()
-        GTH_RefreshDropMenus( GTHdisplayphase )
     elseif self.value == "ResetRoster" then
         GTHDataRoster["GTHhealerList"] = nil
         GTHDataRoster["GTHtankList"] = nil
@@ -3394,8 +3302,9 @@ function GTH_Broadcast( justthisphase )
 
 	GTHsessionflags.announcements = true
 	
-	-- send out addon message for other clients
-	SendAddonMessage( "GTH", "BROADCAST", "RAID" )
+    -- PA: Uncomment
+    -- send out addon message for other clients
+	--SendAddonMessage( "GTH", "BROADCAST", "RAID" )
 	
 	-- make messages
 	local messages = GTH_MakeMessages( justthisphase )
@@ -3418,7 +3327,7 @@ function GTH_Broadcast( justthisphase )
         for h,v in pairs(GTHhealerList) do
             if h ~= UnitName("player") then
                 -- check talents
-                if GTH_IsHealerFromTalents( h ) and GTH_HealerAssignedAnywhere( h ) then
+                if GTH_HealerAssignedAnywhere( h ) then
                     -- send whisper reply, as if we just got a whisper "heal!"
                     GTH_CHAT_MSG_WHISPER( "heal!" , h , justthisphase , true );
                 end
@@ -3472,13 +3381,13 @@ function GTH_CHAT_MSG_WHISPER( msg , user , justthisphase , spam ) -- {{{
         local reply = GTH_MakeMessages( justthisphase , user )
         
         -- shadowpriest catch
-        local isinlist, class, talents = GTH_InHealerList( user )
-        if class == "PRIEST" and talents then
-            if talents[3] > 30 then
-                -- has shadowform, so...
-                table.insert( reply , "Just melt faces." );
-            end
-        end
+        -- local isinlist, class, talents = GTH_InHealerList( user )
+        -- if class == "PRIEST" and talents then
+        --     if talents[3] > 30 then
+        --         -- has shadowform, so...
+        --         table.insert( reply , "Just melt faces." );
+        --     end
+        -- end
         
         -- add whisper instructions to end
         if GTHData.verbose and not spam then
@@ -3576,6 +3485,10 @@ function GTH_MakePresetShareString( preset )
 end
 
 function GTH_SharePreset( preset )
+
+    -- PA: Cut this off from other clients, 
+    --return
+
 	-- send preset to other clients in RAID
 	-- the other clients pick preset up as their current preset
 	
@@ -3584,8 +3497,10 @@ function GTH_SharePreset( preset )
 	--ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, queueName)
 	for _, chunk in pairs(m) do
 	   --gthprint( chunk )
-		ChatThrottleLib:SendAddonMessage("NORMAL", "GTHchunk", chunk, "RAID" )
-		--ChatThrottleLib:SendAddonMessage("NORMAL", "GTHchunk", chunk, "WHISPER" , "Pembroke" )
+       -- PA: This line was uncommented 
+       --ChatThrottleLib:SendAddonMessage("NORMAL", "GTHchunk", chunk, "RAID" )
+        
+        --ChatThrottleLib:SendAddonMessage("NORMAL", "GTHchunk", chunk, "WHISPER" , "Pembroke" )
 		--ChatThrottleLib:SendChatMessage("NORMAL", "GTHchunk", chunk, "CHANNEL", 2)
 	end
 	
@@ -3598,15 +3513,13 @@ function GTH_InHealerList( aname )
     -- if so, returns class and talents (if scanned)
     local inlist = false;
     local aclass = nil;
-    local htalents = nil;
     
     if GTHhealerList[aname] then
         inlist = true;
         aclass = GTHhealerList[aname]["class"];
-        htalents = GTHhealerList[aname]["talents"];
     end
     
-    return inlist, aclass, htalents;
+    return inlist, aclass;
 end
 
 function GTH_GetClass( name )
@@ -3669,6 +3582,10 @@ function GTH_phase_copy( orig )
 end
 
 function GTH_FilterPreset( aPreset )
+
+    -- PA: review later
+    --return 
+
     -- filters a preset, with saved healer names, through the currently available healer list
     -- 1) match all available healers to any saved assignments with their name
     -- 2) for remaining assignments, match class/spec with saved healer
@@ -3708,7 +3625,7 @@ function GTH_FilterPreset( aPreset )
     -- copy the currently available healers, so we can track them as we use them
     local availablehealers = {}
     for h,v in pairs( GTHhealerList ) do
-        if GTH_IsHealerFromTalents( h ) then availablehealers[h] = v end
+        availablehealers[h] = v
     end
     
     -- 1
@@ -3740,25 +3657,7 @@ function GTH_FilterPreset( aPreset )
     -- assign replacements
     -- loop over names to replace, and assign individual replacements from available
     
-    -- first pass for matching class AND spec
-    for h,v in pairs( replacelist ) do
-        if h ~= GTHL["All remaining"] then
-            -- find an available healer with the same class
-            for h2,v2 in pairs( availablehealers ) do
-                -- if class is in the preset class list
-                if string.find( v["class"] , v2["class"] ) then
-                	if GTH_TalentsSame( v["talents"] , v2["talents"] ) then
-						replacelist[h]["replacement"] = h2
-						availablehealers[h2] = nil -- remove so we don't use again
-						gthprint("GTH> Substitution: "..h.."("..v["class"]..") --> "..h2)
-						break
-                    end
-                end
-            end
-        end -- not all remaining
-    end
-    
-    -- second pass for matching class only
+    -- first pass for matching class only
     for h,v in pairs( replacelist ) do
         if h ~= GTHL["All remaining"] then
         	if not v["replacement"] then
@@ -3777,7 +3676,7 @@ function GTH_FilterPreset( aPreset )
         end -- not all remaining
     end
     
-    -- third pass for any replacement
+    -- second pass for any replacement
     for h,v in pairs( replacelist ) do
         if h ~= GTHL["All remaining"] then
             if not v["replacement"] then
@@ -3827,7 +3726,7 @@ end
 local GTHtankclasses = { ["WARRIOR"]=true , ["DRUID"]=true , ["PALADIN"]=true , ["DEATHKNIGHT"]=true }
 local GTHhealclasses = { ["PRIEST"]=true , ["DRUID"]=true , ["PALADIN"]=true , ["SHAMAN"]=true }
 
-local GTHtalenttimer = 0;
+local GTHdisconnecttimer = 0;
 local GTHdeathTimer = 0;
 local GTHpulsetimer = 0
 local GTHpulsedir = 1
@@ -3844,11 +3743,9 @@ function GTH_OnUpdate(self,elapsed)
         end
     end
     
-    GTHtalenttimer = GTHtalenttimer + elapsed;
-    if GTHtalenttimer > 2 then -- 2 second delay between attempts
-        GTHtalenttimer = 0
-        -- check talent inspect queue
-        GTH_StartInspect(self)
+    GTHdisconnecttimer = GTHdisconnecttimer + elapsed;
+    if GTHdisconnecttimer > 2 then -- 2 second delay between attempts
+        GTHdisconnecttimer = 0
         -- scan for disconnects and reconnects
         GTH_ScanDisconnects()
     end
@@ -4032,21 +3929,19 @@ function GTH_CombatLogEvent( ... )
 	   --gthprint( "UNIT_DIED" )
 		-- unit death
 		-- check if healer
-		local isHealer, _ , _ = GTH_InHealerList( destName )
+		local isHealer, _ = GTH_InHealerList( destName )
 		local isAssigned = GTH_HealerAssignedAnywhere( destName )
 		if isHealer and isAssigned then
-			if GTH_IsHealerFromTalents( destName ) then
 				
-				-- if dead healer is a PRIEST, we need to delay the death announcement a moment, to check for Spirit of Redemption
-				-- we use OnUpdate event for this
-				if GTH_GetClass( destName ) == "PRIEST" then
-					table.insert( GTHdeathQueue , destName ) -- add this priest to the announce queue
-				else
-					-- not a PRIEST, so just announce
-					GTH_DeathAnnounce( destName )
-				end
+            -- if dead healer is a PRIEST, we need to delay the death announcement a moment, to check for Spirit of Redemption
+            -- we use OnUpdate event for this
+            if GTH_GetClass( destName ) == "PRIEST" then
+                table.insert( GTHdeathQueue , destName ) -- add this priest to the announce queue
+            else
+                -- not a PRIEST, so just announce
+                GTH_DeathAnnounce( destName )
+            end
 				
-			end -- ishealerfromtalents
 		end -- inhealerlist
 	end -- UNIT_DIED
 	
@@ -4093,10 +3988,8 @@ function GTH_DeathAnnounce( destName , disconnect )
 		-- go through list of healers and whisper message to each
         for h,v in pairs( GTHhealerList ) do
             if h ~= UnitName("player") then
-                if GTH_IsHealerFromTalents( h ) then
-                    for _, message in pairs(m) do
-						ChatThrottleLib:SendChatMessage("NORMAL", "GTH", message, "WHISPER" , nil , h )
-					end
+                for _, message in pairs(m) do
+                    ChatThrottleLib:SendChatMessage("NORMAL", "GTH", message, "WHISPER" , nil , h )
                 end
             end
         end -- loop over healers
