@@ -2343,24 +2343,25 @@ function GTHdropBroadcast_Initialise(self)
     	serverChannels[ c ] = c
     end
     local numChan = #chanList / 2;
-    for i = 1,numChan do
-        local chanNumberIndex = (i-1)*2 + 1; -- 1 is 1; 2 is 3; 3 is 5; etc.
-        if not serverChannels[ chanList[chanNumberIndex + 1] ] then
-            -- not a server channel, so add to menu
-            info.text = chanList[chanNumberIndex + 1];
-            info.value = chanList[chanNumberIndex + 1];
-            info.func = GTHdropmenu_OnClick 
-            info.owner = self
-            info.checked = nil; 
-            info.icon = nil;
+    -- PA: Fix this channel search
+    -- for i = 1,numChan do
+    --     local chanNumberIndex = (i-1)*2 + 1; -- 1 is 1; 2 is 3; 3 is 5; etc.
+    --     if not serverChannels[ chanList[chanNumberIndex + 1] ] then
+    --         -- not a server channel, so add to menu
+    --         info.text = chanList[chanNumberIndex + 1];
+    --         info.value = chanList[chanNumberIndex + 1];
+    --         info.func = GTHdropmenu_OnClick 
+    --         info.owner = self
+    --         info.checked = nil; 
+    --         info.icon = nil;
             
-            -- get the chat window color for this channel
-            local chatinfo = ChatTypeInfo[ "CHANNEL"..chanList[chanNumberIndex] ];
-            info.colorCode = GTH_rgbToHexColor( chatinfo.r , chatinfo.g , chatinfo.b );
+    --         -- get the chat window color for this channel
+    --         local chatinfo = ChatTypeInfo[ "CHANNEL"..chanList[chanNumberIndex] ];
+    --         info.colorCode = GTH_rgbToHexColor( chatinfo.r , chatinfo.g , chatinfo.b );
             
-            UIDropDownMenu_AddButton(info, level);
-        end
-    end
+    --         UIDropDownMenu_AddButton(info, level);
+    --     end
+    -- end
     
     info.text = GTHL["Whisper"];
     info.value = "WHISPER";
