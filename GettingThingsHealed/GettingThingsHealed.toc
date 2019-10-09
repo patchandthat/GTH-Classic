@@ -1,8 +1,8 @@
 ## Interface: 11302
-## Title: Getting Things Healed
+## Title: Getting Things Healed Classic
 ## Notes: Raid healing assignments made easier
-## Author: Dagma of Argent Dawn
-## Version: 2.5.3
+## Author: Neffer of Razorgore, originally by Dagma of Argent Dawn
+## Version: 0.1.0
 ## OptionalDeps: ChatThrottleLib
 ## X-Embeds: ChatThrottleLib
 ## SavedVariables: GTHData
