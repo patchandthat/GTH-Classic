@@ -497,7 +497,7 @@ function GTH_CreateFrames()
     -- make frames
     
     -- config frame
-    GTHframes.frame = CreateFrame("Frame", "GTHFrame", UIParent );
+    GTHframes.frame = CreateFrame("Frame", "GTHFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.frame:Hide();
 	GTHframes.frame:EnableMouse(true)
 	GTHframes.frame:SetFrameStrata("MEDIUM")
@@ -534,7 +534,7 @@ function GTH_CreateFrames()
 	-- up to eight 
 	GTHframes.phasedrag = {}
 	for i = 1,8 do
-	   GTHframes.phasedrag[ i ] = CreateFrame( "Frame" , "GTHFramePhaseDrag"..i , GTHframes.frame )
+	   GTHframes.phasedrag[ i ] = CreateFrame( "Frame" , "GTHFramePhaseDrag"..i , GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
 	   GTH_PhaseDragInitialize( GTHframes.phasedrag[ i ] )
 	   GTHframes.phasedrag[ i ].label:SetText( GTH_rgbToHexColor(1,1,1).."xphasex"..i )
 	   GTHframes.phasedrag[ i ]:ClearAllPoints()
@@ -614,7 +614,7 @@ function GTH_CreateFrames()
 	-- these hold the drag-able healer name frames
 	GTHframes.assignedpool = {}
 	for i = 1,8 do
-	   GTHframes.assignedpool[ i ] = CreateFrame("Frame", "GTHFramePool"..i, GTHframes.frame )
+	   GTHframes.assignedpool[ i ] = CreateFrame("Frame", "GTHFramePool"..i, GTHframes.frame , BackdropTemplateMixin and "BackdropTemplate")
 	   GTH_AssignedPoolInitialize( GTHframes.assignedpool[ i ] )
 	   GTHframes.assignedpool[ i ]:Hide()
 	end
@@ -627,7 +627,7 @@ function GTH_CreateFrames()
 	GTHframes.dragPopulate = {}
 	GTHframes.dragPopulateLabel = {}
 	for i = 1,25 do
-	   GTHframes.dragPopulate[ i ] = CreateFrame("Frame", "GTHFrameDragPopulate"..i, GTHframes.frame )
+	   GTHframes.dragPopulate[ i ] = CreateFrame("Frame", "GTHFrameDragPopulate"..i, GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
 	   GTHframes.dragPopulateLabel[ i ] = GTHframes.dragPopulate[ i ]:CreateFontString()
 	   GTH_DragInitialize( GTHframes.dragPopulate[ i ] , GTHframes.dragPopulateLabel[ i ] , "h"..i , "PRIEST" , "populate" )
 	   -- position
@@ -642,7 +642,7 @@ function GTH_CreateFrames()
 	   GTHframes.dragListed[ i ] = {}
 	   GTHframes.dragListedLabel[ i ] = {}
 	   for j = 1,8 do
-           GTHframes.dragListed[ i ][ j ] = CreateFrame("Frame", "GTHFrameDragListed"..i..j, GTHframes.frame )
+           GTHframes.dragListed[ i ][ j ] = CreateFrame("Frame", "GTHFrameDragListed"..i..j, GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
            GTHframes.dragListedLabel[ i ][ j ] = GTHframes.dragListed[ i ][ j ]:CreateFontString()
            GTH_DragInitialize( GTHframes.dragListed[ i ][ j ] , GTHframes.dragListedLabel[ i ][ j ] , "h"..i..j , "PRIEST" , "relocate" )
         end
@@ -651,7 +651,7 @@ function GTH_CreateFrames()
 	-- assignment name boxes (can be relocated or deleted)
 	GTHframes.dragAssignment = {}
 	for i = 1,8 do
-	   GTHframes.dragAssignment[ i ] = CreateFrame("Frame", "GTHFrameDragAssignment"..i, GTHframes.frame )
+	   GTHframes.dragAssignment[ i ] = CreateFrame("Frame", "GTHFrameDragAssignment"..i, GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
 	   GTHframes.dragAssignment[i].label = GTHframes.dragAssignment[ i ]:CreateFontString()
 	   GTHframes.dragAssignment[i]:EnableMouse(true)
         GTHframes.dragAssignment[i]:SetScript( "OnMouseUp" , function( self , button ) 
@@ -668,7 +668,7 @@ function GTH_CreateFrames()
 	end
 	
 	-- drag ghost frame
-	GTHframes.dragGhost = CreateFrame("Frame", "GTHFrameDragGhost", GTHframes.frame )
+	GTHframes.dragGhost = CreateFrame("Frame", "GTHFrameDragGhost", GTHframes.frame , BackdropTemplateMixin and "BackdropTemplate")
     GTHframes.dragGhostLabel = GTHframes.dragGhost:CreateFontString()
     GTH_DragInitialize( GTHframes.dragGhost , GTHframes.dragGhostLabel , "xxxx" , "PRIEST" , "ghost" )
     GTHframes.dragGhost:SetMovable(true)
@@ -679,7 +679,7 @@ function GTH_CreateFrames()
 	-- tank populate pool (the visual image of GTHtankList)
 	GTHframes.dragTankPopulate = {}
 	for i = 1,25 do
-	   GTHframes.dragTankPopulate[ i ] = CreateFrame("Frame", "GTHFrameDragTankPopulate"..i, GTHframes.frame )
+	   GTHframes.dragTankPopulate[ i ] = CreateFrame("Frame", "GTHFrameDragTankPopulate"..i, GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
 	   GTHframes.dragTankPopulate[ i ].label = GTHframes.dragTankPopulate[ i ]:CreateFontString()
 	   GTH_DragInitialize( GTHframes.dragTankPopulate[ i ] , GTHframes.dragTankPopulate[ i ].label , "t"..i , "WARRIOR" , "assignmentpopulate" )
 	   -- position
@@ -690,7 +690,7 @@ function GTH_CreateFrames()
 	-- assignment name boxes
 	GTHframes.assignmentpool = {}
 	for i = 1,8 do
-	   GTHframes.assignmentpool[ i ] = CreateFrame("Frame", "GTHFrameAssignmentPool"..i, GTHframes.frame )
+	   GTHframes.assignmentpool[ i ] = CreateFrame("Frame", "GTHFrameAssignmentPool"..i, GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" )
 	   GTH_AssignmentPoolInitialize( GTHframes.assignmentpool[ i ] )
 	   GTHframes.assignmentpool[ i ]:SetBackdrop( { 
             bgFile = texwhiteback, 
@@ -749,7 +749,7 @@ function GTH_CreateFrames()
 	GTHframes.cancelbutton:Hide();
 	
 	-- custom assignment text entry frame
-    GTHframes.custom = CreateFrame("Frame", "GTHcustomassignment", UIParent);
+    GTHframes.custom = CreateFrame("Frame", "GTHcustomassignment", UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.custom:Hide();
 	GTHframes.custom:EnableMouse(true)
 	GTHframes.custom:SetFrameStrata("HIGH")
@@ -804,7 +804,7 @@ function GTH_CreateFrames()
 	GTHframes.customCancel:Show();
 	
 	-- edit box for custom dialog
-	GTHframes.customedit = CreateFrame("EditBox", "GTHcustomassignmentEdit", GTHcustomassignment );
+	GTHframes.customedit = CreateFrame("EditBox", "GTHcustomassignmentEdit", GTHcustomassignment , BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.customedit:ClearAllPoints();
 	GTHframes.customedit:SetPoint("CENTER",GTHframes.custom,"CENTER",0,0);
 	GTHframes.customedit:SetText( GTHL["Custom..."] );
@@ -829,7 +829,7 @@ function GTH_CreateFrames()
 	-- DELETE PRESET FRAMES
 	
 	-- dialog
-    GTHframes.deletepreset = CreateFrame("Frame", "GTHdeletepreset", UIParent);
+    GTHframes.deletepreset = CreateFrame("Frame", "GTHdeletepreset", UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.deletepreset:Hide();
 	GTHframes.deletepreset:EnableMouse(true)
 	GTHframes.deletepreset:SetFrameStrata("HIGH")
@@ -883,7 +883,7 @@ function GTH_CreateFrames()
 	-- RENAME PHASE FRAMES
 	
 	-- dialog
-    GTHframes.renamephase = CreateFrame("Frame", "GTHrenamephase", UIParent);
+    GTHframes.renamephase = CreateFrame("Frame", "GTHrenamephase", UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.renamephase:Hide();
 	GTHframes.renamephase:EnableMouse(true)
 	GTHframes.renamephase:SetFrameStrata("HIGH")
@@ -925,7 +925,7 @@ function GTH_CreateFrames()
     --  GTH_RefreshDropMenus( this.owner.phase );
 	
 	-- edit box for renamephase dialog
-	GTHframes.renamephaseedit = CreateFrame("EditBox", "GTHrenamephaseEdit", GTHrenamephase );
+	GTHframes.renamephaseedit = CreateFrame("EditBox", "GTHrenamephaseEdit", GTHrenamephase , BackdropTemplateMixin and "BackdropTemplate");
 	GTHframes.renamephaseedit:ClearAllPoints();
 	GTHframes.renamephaseedit:SetPoint("CENTER",GTHframes.renamephase,"CENTER",0,0);
 	GTHframes.renamephaseedit:SetText("Custom");
@@ -1293,7 +1293,7 @@ end
 
 function GTH_RepLinesInitialize( w , h )
     -- creates and returns a frame that just draws those connecting lines
-    local frame = CreateFrame("Frame", nil , GTHframes.frame );
+    local frame = CreateFrame("Frame", nil , GTHframes.frame, BackdropTemplateMixin and "BackdropTemplate" );
 	frame:SetWidth(w)
 	frame:SetHeight(h)
 	frame:SetBackdrop( { 
