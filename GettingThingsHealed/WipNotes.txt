@@ -1,0 +1,51 @@
+WIP notes
+=========
+
+Strings:
+** "Spec Icons"
+** "Filter talents"
+** "scan"  /cmd arg
+"talents" /cmd arg
+** "filter healers by talents"
+** "show talent spec icons"
+"rescan talents"
+** "purelists"
+
+
+Globals:
+** GTHinspectTarget
+** GTHinspectQueue
+** GTHinspectedList
+** GTHinspectedList2
+
+** GTHData.checkspecs
+** GTHData.specicons
+** GTHspecicons
+
+Functions:
+** GTH_IsHealerFromTalents
+** GTH_IsTankFromTalents
+** GTH_GetTalents
+** GTH_UpdateInspectQueue
+** GTH_NotifyInspect
+** GTH_TalentsSame
+** GTH_StartInspect
+** GTH_GetRaidMemberTalents
+
+Events: 
+** INSPECT_TALENT_READY
+** UNIT_SPELLCAST_SUCCEEDED ** double check that this doesn't apply to more than talenty spec swapping
+
+* = Declarations removed, call sites and usages still need inspecting and updating
+** = Usages removed
+
+## To rework:
+### refreshpopulatepool **
+## GTH_SetDragHealer **
+## GTH_DragStart **
+## GTH_DragStop **
+## GTH_RefreshAssignmentInPool **
+## GTH_InHealerList -> 3rd return is talent table **
+
+Notes:
+May be worth looking at AceLibs for chat rate limiting & talent inspection libs
